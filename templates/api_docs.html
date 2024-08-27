@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>API Documentation</h1>
+    <div class="buttons">
+        <a href="{{ url_for('home') }}"><button>Home</button></a>
+    </div>
+    <h2>API Endpoints</h2>
+    <ul>
+        <li>GET /api/books - List all books</li>
+        <li>GET /api/books/&lt;id&gt; - Get a book by ID</li>
+        <li>POST /api/books - Add a new book</li>
+        <li>PUT /api/books/&lt;id&gt; - Update a book by ID</li>
+        <li>DELETE /api/books/&lt;id&gt; - Delete a book by ID</li>
+    </ul>
+</body>
+</html>

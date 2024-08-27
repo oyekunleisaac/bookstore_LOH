@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cards.css') }}">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const booksList = document.getElementById('books-list');
+
+            function fetchBooks() {
+                fetch('/api/books')
+                    .then(response => response.json())
+                    .then(data => {
+                        booksList.innerHTML = ''; 
+                        data.forEach(book => {
+                            createBookCard(book);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching books:', error));
+            }
+
+            function createBookCard(book) {
+                const card = document.createElement('div');
+                card.classList.add('book-card');
+
+                const title = document.createElement('h2');
+                title.textContent = book.title;
+
+                const author = document.createElement('p');
+                author.textContent = `by ${book.author}`;
+
+                const addButton = document.createElement('button');
+                addButton.textContent = 'Add to Cart';
+                addButton.classList.add('add-to-cart');
+                addButton.addEventListener('click', () => {
+                    addButton.textContent = 'Coming Soon';
+                    addButton.disabled = true;
+                });
+
+                const summaryButton = document.createElement('button');
+                summaryButton.innerHTML = '🔍 View Summary';
+                summaryButton.classList.add('view-summary');
+                summaryButton.addEventListener('click', () => {
+                    document.getElementById('modal').style.display = 'block';
+                });
+
+                card.appendChild(title);
+                card.appendChild(author);
+                card.appendChild(addButton);
+                card.appendChild(summaryButton);
+
+                booksList.appendChild(card);
+            }
+
+            fetchBooks();
+
+            const searchForm = document.getElementById('search-form');
+            searchForm.addEventListener('submit', function(event) {
+                event.preventDefault(); 
+                const bookId = document.getElementById('search-input').value;
+
+                if (bookId) {
+                    fetch(`/api/books/${bookId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Book not found');
+                            }
+                            return response.json();
+                        })
+                        .then(book => {
+                            booksList.innerHTML = ''; 
+                            createBookCard(book); 
+                        })
+                        .catch(error => {
+                            booksList.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                        });
+                }
+            });
+
+            document.getElementById('close-modal').addEventListener('click', function() {
+                document.getElementById('modal').style.display = 'none';
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Books List</h1>
+    
+    <!-- Search Form -->
+     <center>
+    <form id="search-form">
+        <input type="number" id="search-input" placeholder="Enter Book ID" required>
+        <button type="submit">Search</button>
+    </form>
+    </center>
+    
+    <div id="books-list" class="books-list">
+        
+    </div>
+    
+    <center><a href="{{ url_for('home') }}"><button>Back to Home</button></a></center>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span id="close-modal" class="close">&times;</span>
+            <p>API paid key is not available. Check back once developer Isaac has added an active OpenAI key.</p>
+        </div>
+    </div>
+</body>
+</html>

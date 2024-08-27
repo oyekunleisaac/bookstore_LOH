@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  bookstore:
+    build: .
+    ports:
+      - "8000:5000"  # Maps local port 8000 to container port 5000 || Please ensure your local port 8000 is available since you would be testing on local for the code review
+    volumes:
+      - .:/app  
+    environment:
+      FLASK_ENV: development
